@@ -155,7 +155,21 @@ const ErrorDashboard = ({ }) => {
                 <ColumnChart data={counts}
                     xtitle="Time"
                     ytitle="Errors"
-                    
+
+                    // rotate 45
+                    library={{
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        maxRotation: 45,
+                                        minRotation: 45
+                                    }
+                                }]
+                            }
+                        }
+                    }}
+                    download={true}
                     xmin={xmin}
                     xmax={xmax}
                 />

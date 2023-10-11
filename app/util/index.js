@@ -18,3 +18,7 @@ export function countEpochTimestamps(timestamps, bucketType = 'minute') {
   
     return counts;
   }
+
+  export const isEmpty = s => {
+    return !s || s.length === 0
+  }

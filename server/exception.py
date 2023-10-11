@@ -1,5 +1,14 @@
+"""
+Simulates a production error flow
+
+Usage:
+    python exception.py --repeat # sends random interval exceptions.
+    python exception.py
+"""
 from ably import AblyRest
 import json
+import traceback
+import sys
 import argparse
 import os
 import time
@@ -7,36 +16,39 @@ import asyncio
 import random
 from dotenv import load_dotenv
 
-# dotenv.config()
-
 load_dotenv()
 
 ABLY_CHANNEL = os.environ.get('ABLY_CHANNEL')
 ABLY_KEY = os.environ.get('ABLY_KEY')
 
 class CustomException:
-    def __init__(self, type, message, timestamp=None):
-        self.type = type
-        self.message = message
-        if not timestamp:
-            timestamp = int(time.time())
-
-        self.timestamp = timestamp
+    def __init__(self, error):
+        # parse metadata from raw exception error
+        self.type = error.__class__.__name__
+        self.message = str(error)
+        self.timestamp = int(time.time()) * 1000
+        exception_traceback = traceback.format_exception(*sys.exc_info())
+        self.trace =  ''.join(exception_traceback)
 
     def get_json(self):
         json_representation = json.dumps(self.__dict__)
         return json_representation
-    
-async def publish_exception(channel, exception):
-    message = exception.get_json()
+
+# This could be called in a production context with access to an ably channel.
+async def publish_exception(channel, e):
+    message = CustomException(e).get_json()
     result = await channel.publish('exception', message)
-    print('publish', result)
+    print('Published error: ', message)
+
+async def simulate_error(channel):
+    try:
+        result = 1 / 0 # some error
+    except Exception as e:
+        await publish_exception(channel, e)
 
 async def main():
     # https://docs.python.org/3/library/argparse.html#example
     parser = argparse.ArgumentParser()
-    parser.add_argument('--type', required=True)
-    parser.add_argument('--message', required=True)
     parser.add_argument('--timestamp', required=False, default=None)
     parser.add_argument('--repeat', action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
@@ -46,15 +58,15 @@ async def main():
         channel = ably.channels.get(ABLY_CHANNEL)
         if args.repeat:
             while True:
-                exception = CustomException(args.type, args.message, args.timestamp)
-                await publish_exception(channel, exception)
+                await simulate_error(channel)
                 # Random sleep between 1 to 2 seconds
                 await asyncio.sleep(1 + random.random())
         else:
-            exception = CustomException(args.type, args.message, args.timestamp)
-            await publish_exception(channel, exception)
+            # One time error send.
+            await simulate_error(channel)
 
 # Example usage: python exception.py --type ArithmeticException --message '/ by zero' --repeat
 if __name__ == '__main__':
+    print('Starting exception script')
     asyncio.run(main())
 

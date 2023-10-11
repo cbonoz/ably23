@@ -1,24 +1,26 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
-import StyledComponentsRegistry from './lib/registry'
-import { Layout } from 'antd'
-const { Header, Footer, Sider, Content } = Layout;
+import UiLayoutWrapper from './lib/ui-layout';
 
-const inter = Inter({ subsets: ['latin'] })
+import './globals.css'
 
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* favicon */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="A real time error reporting dashboard on Ably" />
+        <meta name="author" content="cbonoz" />
+        <meta name="keywords" content="Ably, realtime, error, dashboard" />
+        <link rel="favicon" href="/favicon.ico" sizes="any" />
         {/* title */}
-        <title>ExceptionAbly | Error reporting dashboard on Ably</title>
+        <title>AblyMonitor | Error reporting dashboard on Ably</title>
       </head>
 
       <body>
-        <StyledComponentsRegistry>
-            {children}
-        </StyledComponentsRegistry>
+        <UiLayoutWrapper>
+          {children}
+        </UiLayoutWrapper>
       </body>
     </html>
   )

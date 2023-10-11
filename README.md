@@ -1,9 +1,9 @@
 
-ExceptionAbly
+AblyMonitor
 ---
 
 
-Exceptionably is an NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
+AblyMonitor is an NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
 
 ### Motivation
 

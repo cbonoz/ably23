@@ -22,11 +22,14 @@ export default function About() {
 
             {/* github */}
             <p>
-                {APP_NAME} is an open source project. You can find the code on GitHub here:&nbsp;
-                <a href="https://github.com/identity23" target="_blank">GitHub</a>&nbsp;
+                {APP_NAME} is an open source project. You can find the code on GitHub&nbsp;
+                <a href="https://github.com/cbonoz/ably23" target="_blank">here</a>.
             </p>
 
-            <p>Note this is a hackathon prototype and would require additional work to be mainnet ready. By uploading data you agree that this service is used as-is and that data may be compromised or shared outside the platform.</p>
+            <p>Run your own instance of {APP_NAME}:<br/>
+            <a href="https://github.com/cbonoz/ably23#how-to-run" target="_blank">How to run</a>
+            
+            </p>
 
             <p>
                 {/* Create listing */}

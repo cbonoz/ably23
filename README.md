@@ -5,9 +5,15 @@ AblyMonitor
 
 AblyMonitor is an NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
 
+Demo Video:
+
+Live URL:
+
 ### Inspiration
 
-Apps like Sentry exist, but they often come with complex setups and a steep learning curve. AblyMonitor was inspired by the need for a simpler and more streamlined solution for monitoring exceptions in real-time. 
+Apps like Sentry and Datadog exist for observability, but they often come with complex setups and a steep learning curve, and sometimes you may just be looking at a narrower problem of needing exception monitoring. 
+
+AblyMonitor is an open source dashboarding app inspired by the need for a simpler and more streamlined solution for monitoring exceptions in real-time.
 
 
 ### How it works
@@ -23,13 +29,11 @@ To run AblyMonitor, follow these steps:
 
 1. Add your varaiables to `.env.sample` in the root and ./server folders. Copy to an equivalent `.env` file. These files contain your Ably key and desired channel for message passing for the app.
 
-2. Install the necessary dependencies using yarn.
+2. Install the necessary dependencies using `yarn`.
 
-3. Start the dashboard by running yarn dev.
+3. Start the dashboard by running `yarn dev`.
 
-4. [Optional] You can also run the Python error generation script:
-
-In the project's server directory, execute `python exception.py`.
+4. [Optional] You can also run the Python error generation script to simulate errors (used in demo video). In the project's server directory, install necessary dependencies and execute `python exception.py`.
 
 ### Sending messages
 

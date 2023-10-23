@@ -27,7 +27,7 @@ export default function About() {
             </p>
 
             <p>Run your own instance of {APP_NAME}:<br/>
-            <a href="https://github.com/cbonoz/ably23#how-to-run" target="_blank">How to run</a>
+            <a href="https://github.com/cbonoz/ably23#running-the-dashboard" target="_blank">How to run</a>
             
             </p>
 

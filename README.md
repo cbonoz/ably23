@@ -66,8 +66,31 @@ It works.
 1. Adding support for more programming languages and frameworks.
 2. Implementing intelligent exception categorization and prioritization.
 3. Expanding integration options with popular application monitoring and alerting systems.
+
 ## Screenshots
+
+### Dashboard (Errors)
+
+<img src="./img/dashboard.png" width=800 />
+
+### Dashboard (Types)
+
+<img src="./img/types.png" width=800 />
+
+### Trace details
+
+<img src="./img/trace.png" width=800 />
+
+### About
+
+<img src="./img/about.png" width=800 />
+
+### Exception script
+
+<img src="./img/exception.png" width=800 />
 
 
 ## Useful links
+* https://ably.devpost.com/
+* https://ably.com/docs
 

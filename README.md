@@ -7,7 +7,7 @@ AblyMonitor is an NextJS app that visualizes exceptions in a dashboard as they a
 
 Demo Video:
 
-Live URL:
+Live URL: https://ably-monitor.vercel.app/
 
 ### Inspiration
 

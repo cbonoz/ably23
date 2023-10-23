@@ -34,7 +34,8 @@ a {
 
 .ant-layout-content {
   margin: 0 auto;
-  max-width: 1000px;
+  max-width: 1200px;
+  width: 80%;
 }
 
 .about-page p {
@@ -204,7 +205,6 @@ textarea {
 }
 
 .container {
-  max-width: 1000px;
   margin: 0 auto;
   min-height: 80vh;
   margin-top: 60px;
@@ -274,7 +274,13 @@ textarea {
   background: white;
 }
 
-
+.code-block {
+  white-space: pre-wrap;
+  font-family: monospace; /* Optionally, use a monospace font for code-like appearance */
+  padding: 10px;
+  background-color: #f0f0f0; /* Optionally, set a background color */
+  border: 1px solid #ccc; /* Optionally, add a border */
+}
 
 .ant-card-head {
   background: #eee !important;

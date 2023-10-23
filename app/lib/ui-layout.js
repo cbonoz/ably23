@@ -60,7 +60,7 @@ function UiLayoutWrapper({ children }) {
 
 
                 </Header>
-                <Content className='container'>
+                <Content>
                     {/* Pass children to the content area */}
                     <div className='container'>
                         {children}

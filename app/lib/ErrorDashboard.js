@@ -1,11 +1,12 @@
 'use client'
 
-import { Button, Card, Divider, Image, Modal, Select, Table, Tabs } from "antd";
+import { Button, Card, Col, Divider, Image, Modal, Row, Select, Table, Tabs } from "antd";
 import { ABLY_CHANNEL, ABLY_KEY } from "../constants";
 import { useEffect, useRef, useState } from "react";
 import * as Ably from 'ably';
+import { CopyOutlined } from "@ant-design/icons";
 import { AreaChart, BarChart, ColumnChart, PieChart } from "react-chartkick";
-import { countMessagesByType, isEmpty } from "../util";
+import { countMessagesByType, formatDate, isEmpty, sortCountMap } from "../util";
 
 import 'chartkick/chart.js'
 
@@ -20,6 +21,11 @@ const ErrorDashboard = ({ }) => {
     const [xmax, setXmax] = useState();
     const [hours, setHours] = useState('1')
     const [counts, setCounts] = useState({})
+
+    const copyToClip = () => {
+        navigator.clipboard.writeText(activeError?.trace)
+        alert('Stack trace copied to clipboard')
+    }
 
     useEffect(() => {
         const now = new Date();
@@ -49,16 +55,16 @@ const ErrorDashboard = ({ }) => {
                 roundedDate.setHours(hour + Math.round(minutes / 60));
 
             }
-            const key = roundedDate;
+            const key = formatDate(roundedDate);
 
             grouped[key] = (grouped[key] || 0) + 1;
         })
-        return grouped;
+        return sortCountMap(grouped);
     }
 
     const ERROR_TABLE_COLUMNS = [
         {
-            title: 'Exception type',
+            title: 'Type',
             dataIndex: 'type',
             key: 'type',
             render: (type) => {
@@ -66,7 +72,14 @@ const ErrorDashboard = ({ }) => {
             }
         },
         {
-            title: 'Message',
+            title: 'Time reported',
+            dataIndex: 'timestamp',
+            render: (timestamp) => {
+                return <span>{formatDate(timestamp)}</span>
+            }
+        },
+        {
+            title: 'Error Message',
             dataIndex: 'message',
             key: 'message',
             render: (message) => {
@@ -74,7 +87,7 @@ const ErrorDashboard = ({ }) => {
             }
         },
         {
-            title: 'Trace',
+            title: 'Stack Trace',
             dataIndex: 'trace',
             key: 'trace',
             render: (trace, err) => {
@@ -83,13 +96,7 @@ const ErrorDashboard = ({ }) => {
                 }}>View trace</Button>
             }
         },
-        {
-            title: 'Time',
-            dataIndex: 'timestamp',
-            render: (timestamp) => {
-                return <span>{new Date(timestamp).toLocaleString()}</span>
-            }
-        }
+
     ]
 
     useEffect(() => {
@@ -129,13 +136,17 @@ const ErrorDashboard = ({ }) => {
                 console.log('received message', data)
                 setMessages(messages => [...messages, data])
                 const newCounts = groupMessages([data], bucketType)
-                setCounts(counts => ({ ...counts, ...newCounts }))
+                setCounts(counts => [...counts, ...newCounts])
             });
         });
 
 
         // setClient(ablyClient)
     }, [])
+
+    useEffect(() => {
+        console.log('counts', counts)
+    }, [counts])
 
     useEffect(() => {
         // Update grouping with new type.
@@ -145,31 +156,40 @@ const ErrorDashboard = ({ }) => {
 
     const hasMessages = !isEmpty(messages)
 
+    const CustomHeading = ({ title, subtitle }) => {
+        return <div>
+            <h3>{title}</h3>
+            <p>{subtitle}</p>
+            <Divider />
+        </div>
+    }
+
     const tabs = [
         {
             label: 'Errors',
             key: 'errors',
             children: <div>
-                <h3>Errors</h3>
-                <p>View errors as they occur in real time.</p>
+                <CustomHeading title='Errors' subtitle='View errors as they occur in real time.' />
                 <ColumnChart data={counts}
-                    xtitle="Time"
+                 download={true} 
+                    xtitle="Time bucket occurred"
                     ytitle="Errors"
-
-                    // rotate 45
-                    library={{
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        maxRotation: 45,
-                                        minRotation: 45
-                                    }
-                                }]
+                    library={{backgroundColor: "red",
+                    plugins: {},
+                    scales: {
+                        y: {
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                minRotation: 45,
                             }
                         }
-                    }}
-                    download={true}
+                    }
+                }}
+                    // tilt 45 degrees
                     xmin={xmin}
                     xmax={xmax}
                 />
@@ -179,16 +199,17 @@ const ErrorDashboard = ({ }) => {
             label: 'Types',
             key: 'types',
             children: <div>
-                <h3>Types</h3>
-                <p>Breakdown of error types</p>
+                <CustomHeading title='Error types' subtitle='View error types as they occur in real time.' />
                 <PieChart data={countMessagesByType(messages)} />
             </div>
         }
     ]
 
+    const stackTrace = activeError?.trace
+
     return <div>
         <div className="centered">
-            <Image src="/logo.png" alt="AblyMonitor Logo" width={190} height={37} /><br />
+            <Image src="/logo.png" alt="AblyMonitor Logo" width={220} height={37} /><br />
             <h3>Dashboard</h3>
             <br />
             <br />
@@ -221,7 +242,7 @@ const ErrorDashboard = ({ }) => {
                                     <Select.Option value='24'>24 hours</Select.Option>
                                 </Select>&nbsp;
                             </span>}
-                            Interval:&nbsp;<Select value={bucketType} style={{ width: 120 }} onChange={(value) => {
+                            Grouping interval:&nbsp;<Select value={bucketType} style={{ width: 120 }} onChange={(value) => {
                                 setBucketType(value)
                             }
                             }>
@@ -234,7 +255,7 @@ const ErrorDashboard = ({ }) => {
                     </div>
 
                     <Divider />
-                    <h3 className="">Feed</h3>
+                    <h3 className="">Exception Feed</h3>
                     <br />
                     <Table
                         dataSource={messages}
@@ -260,8 +281,17 @@ const ErrorDashboard = ({ }) => {
             onCancel={() => {
                 setActiveError(null)
             }}>
-            Trace
-            <pre>{activeError?.trace}</pre>
+            <Row>
+                <Col span={24}>
+                    <h3>Copy to clipboard: &nbsp;<CopyOutlined onClick={copyToClip} className='pointer' /></h3>
+                    <div className="code-block">
+                        {stackTrace}
+                    </div>
+                    <div>
+                        <i>Recorded: {formatDate(activeError?.timestamp)}</i>
+                    </div>
+                </Col>
+            </Row>
         </Modal>
 
 

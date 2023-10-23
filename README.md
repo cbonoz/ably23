@@ -3,7 +3,7 @@ AblyMonitor
 ---
 
 
-AblyMonitor is an NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
+AblyMonitor is a self-hostable NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
 
 Demo Video:
 
@@ -12,8 +12,6 @@ Live URL: https://ably-monitor.vercel.app/
 ### Inspiration
 
 Apps like Sentry and Datadog exist for observability, but they often come with complex setups and a steep learning curve, and sometimes you may just be looking at a narrower problem of needing exception monitoring. 
-
-AblyMonitor is an open source dashboarding app inspired by the need for a simpler and more streamlined solution for monitoring exceptions in real-time.
 
 
 ### How it works

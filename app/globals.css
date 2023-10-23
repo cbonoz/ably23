@@ -148,9 +148,6 @@ a {
   margin-bottom: 10px;
 }
 
-.pointer {
-  cursor: pointer;
-}
 
 .search-input {
   min-width: 400px;
@@ -254,9 +251,6 @@ textarea {
   margin-bottom: 10px;
 }
 
-.pointer {
-  cursor: pointer;
-}
 
 .ant-input,
 input,

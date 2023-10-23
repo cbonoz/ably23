@@ -35,7 +35,7 @@ class CustomException:
         return json_representation
 
 # This could be called in a production context with access to an ably channel.
-async def publish_exception(channel, e):
+async def publish_exception(channel , e: Exception):
     message = CustomException(e).get_json()
     result = await channel.publish('exception', message)
     print('Published error: ', message)

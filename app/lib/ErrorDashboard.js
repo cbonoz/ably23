@@ -172,7 +172,7 @@ const ErrorDashboard = ({ }) => {
                 <CustomHeading title='Errors' subtitle='View errors as they occur in real time.' />
                 <ColumnChart data={counts}
                  download={true} 
-                    xtitle="Time bucket occurred"
+                    xtitle={`Time reported (grouped by ${bucketType})`}
                     ytitle="Errors"
                     library={{backgroundColor: "red",
                     plugins: {},

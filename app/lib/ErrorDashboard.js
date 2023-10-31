@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Card, Col, Divider, Image, Modal, Row, Select, Table, Tabs } from "antd";
-import { ABLY_CHANNEL, ABLY_KEY } from "../constants";
+import { ABLY_CHANNEL, ABLY_KEY, HISTORY_HOURS, HISTORY_LIMIT } from "../constants";
 import { useEffect, useRef, useState } from "react";
 import * as Ably from 'ably';
 import { CopyOutlined } from "@ant-design/icons";
@@ -116,17 +116,15 @@ const ErrorDashboard = ({ }) => {
             // https://ably.com/docs/storage-history/history?lang=javascript
             const options = {
                 direction: 'backwards',
-                limit: 1000, // could be variable depending on retention/rendering needs.
+                limit: HISTORY_LIMIT, // TODO: add paginated request could be variable depending on retention/rendering needs.
             }
             channel.history(options, (err, page) => {
                 if (err) {
                     console.log('error getting history', err)
                     return
                 }
-                console.log('got history', page)
                 const pastMessages = page.items.map(item => JSON.parse(item.data));
-                const newCounts = groupMessages(pastMessages, bucketType)
-                setCounts(newCounts)
+                console.log('got history', pastMessages)
                 setMessages(pastMessages)
             });
 
@@ -134,15 +132,10 @@ const ErrorDashboard = ({ }) => {
             channel.subscribe('exception', function (message) {
                 const data = JSON.parse(message.data)
                 console.log('received message', data)
-                const newMessages = [...messages, data]
                 // Note could improve performance by only updating counts.
-                setMessages(newMessages)
-                const newCounts = groupMessages(newMessages, bucketType)
-                setCounts(newCounts)
+                setMessages(messages => [...messages, data])
             });
         });
-
-
         // setClient(ablyClient)
     }, [])
 
@@ -152,9 +145,9 @@ const ErrorDashboard = ({ }) => {
 
     useEffect(() => {
         // Update grouping with new type.
-        const newCounts = groupMessages(messages, bucketType)
-        setCounts(newCounts)
-    }, [bucketType])
+        console.log('messages', messages)
+        setCounts(groupMessages(messages, bucketType))
+    }, [bucketType, messages]);
 
     const hasMessages = !isEmpty(messages)
 
@@ -173,24 +166,29 @@ const ErrorDashboard = ({ }) => {
             children: <div>
                 <CustomHeading title='Errors' subtitle='View errors as they occur in real time.' />
                 <ColumnChart data={counts}
-                 download={true} 
+                    download={true}
                     xtitle={`Time reported (grouped by ${bucketType})`}
                     ytitle="Errors"
-                    library={{backgroundColor: "red",
-                    plugins: {},
-                    scales: {
-                        y: {
-                            ticks: {
-                                stepSize: 1
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                minRotation: 45,
+                    library={{
+                        plugins: {},
+                        scales: {
+                            y: {
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    minRotation: 45,
+                                    // format
+                                    callback: function (value, index, values) {
+                                        const time = counts[index][0].split(', ')[1]
+                                        return time;
+                                    }
+                                }
                             }
                         }
-                    }
-                }}
+                    }}
                     // tilt 45 degrees
                     xmin={xmin}
                     xmax={xmax}
@@ -254,6 +252,10 @@ const ErrorDashboard = ({ }) => {
                                 {/* <Select.Option value="day">Day</Select.Option> */}
                             </Select>
                         </span>
+                        <br/>
+                        <div className="bold">
+                            Showing up to the last {HISTORY_HOURS} hours of messages.
+                        </div>
                     </div>
 
                     <Divider />

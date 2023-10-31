@@ -1,6 +1,6 @@
 'use client';
 
-import { APP_NAME, EXAMPLE_DATASETS, GITHUB_REPO } from "../constants";
+import { APP_NAME, EXAMPLE_DATASETS, GITHUB_REPO, HISTORY_LIMIT } from "../constants";
 import Image from 'next/image'
 import Button from 'antd/es/button'
 import { useRouter } from "next/navigation";
@@ -8,9 +8,10 @@ import { useState } from "react";
 import { Card, Divider } from "antd";
 
 const SECTIONS = [
-    "AblyMonitor is a self-hostable NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.",
+    `${APP_NAME} is a self-hostable NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.`,
     "Apps like Sentry and Datadog exist for observability, but they often come with complex setups and a steep learning curve, and sometimes you may just be looking at a narrower problem of needing exception monitoring.",
     "The error message dashboard works by integrating into your application and capturing exceptions as they occur. It provides a real-time interface that displays these exceptions in a user-friendly manner, allowing developers to quickly identify and respond to issues.",
+    `On refresh, ${APP_NAME} pulls up to the last ${HISTORY_LIMIT} messages from the Ably channel and displays them`,
 ]
 
 

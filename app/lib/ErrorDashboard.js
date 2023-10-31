@@ -133,7 +133,7 @@ const ErrorDashboard = ({ }) => {
                 const data = JSON.parse(message.data)
                 console.log('received message', data)
                 // Note could improve performance by only updating counts.
-                setMessages(messages => [...messages, data])
+                setMessages(messages => [data, ...messages])
             });
         });
         // setClient(ablyClient)

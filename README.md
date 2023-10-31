@@ -8,7 +8,7 @@ AblyMonitor
 ---
 
 
-AblyMonitor is a self-hostable NextJS app that visualizes exceptions in a dashboard as they are thrown from your application in real time.
+AblyMonitor is a real time dashboarding app that visualizes exceptions as they are thrown from your services via Ably channels.
 
 Demo Video:
 
@@ -30,7 +30,7 @@ Ably also supports real time use cases nicely and provides some persistence for 
 
 To run AblyMonitor, follow these steps:
 
-1. Add your varaiables to `.env.sample` in the root and ./server folders. Copy to an equivalent `.env` file. These files contain your Ably key and desired channel for message passing for the app.
+1. Add your variables to `.env.sample` in the root and ./server folders. Copy to an equivalent `.env` file. These files contain your Ably key and desired channel for message passing for the app.
 
 2. Install the necessary dependencies using `yarn`.
 
@@ -57,9 +57,6 @@ async def publish_exception(channel , e: Exception):
 1. Ensuring real-time exception capture and synchronization with the dashboard.
 2. Managing the scalability and performance of the system as exceptions poured in.
 3. Implementing a user-friendly and intuitive dashboard interface.
-
-## Accomplishments that we're proud of
-It works.
 
 
 ## What we learned

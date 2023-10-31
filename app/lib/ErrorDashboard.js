@@ -134,9 +134,11 @@ const ErrorDashboard = ({ }) => {
             channel.subscribe('exception', function (message) {
                 const data = JSON.parse(message.data)
                 console.log('received message', data)
-                setMessages(messages => [...messages, data])
-                const newCounts = groupMessages([data], bucketType)
-                setCounts(counts => [...counts, ...newCounts])
+                const newMessages = [...messages, data]
+                // Note could improve performance by only updating counts.
+                setMessages(newMessages)
+                const newCounts = groupMessages(newMessages, bucketType)
+                setCounts(newCounts)
             });
         });
 
@@ -261,6 +263,7 @@ const ErrorDashboard = ({ }) => {
                         dataSource={messages}
                         columns={ERROR_TABLE_COLUMNS}
                     />
+                    <p>Total errors: {messages.length}</p>
                 </div>
             }
 

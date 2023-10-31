@@ -268,10 +268,6 @@ const ErrorDashboard = ({ }) => {
                     <p>Total errors: {messages.length}</p>
                 </div>
             }
-
-            {/* {messages.map((message, index) => {
-                return <p key={index}>{message.data}</p>
-            })} */}
         </Card>
 
         {/* Trace modal */}

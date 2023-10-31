@@ -10,7 +10,7 @@ AblyMonitor
 
 AblyMonitor is a real time dashboarding app that visualizes exceptions as they are thrown from your services via Ably channels.
 
-Demo Video:
+Demo Video: https://youtu.be/jolhdVxnEgU
 
 Live URL: https://ably-monitor.vercel.app/
 
